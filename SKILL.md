@@ -1,4 +1,4 @@
-# xiaohu-wechat-format
+# wechat-format
 
 公众号一键排版技能。把 Obsidian 里的 Markdown 文章转成微信公众号兼容的排版 HTML，可视化选择主题后一键复制粘贴到微信后台。
 
@@ -80,7 +80,7 @@
 #### 第 3 步：打开主题画廊（默认流程）
 
 ```bash
-python3 /Users/apple/.claude/skills/xiaohu-wechat-format/scripts/format.py \
+python3 /Users/apple/.claude/skills/wechat-format/scripts/format.py \
   --input "文章路径.md" \
   --gallery \
   --recommend newspaper magazine ink
@@ -93,7 +93,7 @@ python3 /Users/apple/.claude/skills/xiaohu-wechat-format/scripts/format.py \
 如果用户已经知道想用哪个主题，可以跳过画廊直接排版：
 
 ```bash
-python3 /Users/apple/.claude/skills/xiaohu-wechat-format/scripts/format.py \
+python3 /Users/apple/.claude/skills/wechat-format/scripts/format.py \
   --input "文章路径.md" \
   --theme terracotta
 ```

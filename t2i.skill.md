@@ -1,4 +1,4 @@
-# xiaohu-t2i
+# t2i
 
 文生图技能（Gemini）。根据文章内容或选中文本，调用 Gemini 图像生成 API，产出与文章节奏、情绪一致的插图、信息图、封面图。
 
@@ -59,24 +59,44 @@
 
 **1c. 对每个插图位置写创意指令**
 
-这是视觉选角的核心输出。对每个确定要插图的位置，写一段创意指令——**不是文章内容的复述，而是视觉翻译**：
+这是视觉选角的核心输出。对每个确定要插图的位置，写一段创意指令——**不是文章内容的复述，而是视觉翻译**。
+
+**视觉锤 + 文字钉原则**：每张图必须有可读文字。视觉隐喻是锤（抓注意力），文字标签是钉（锚定意义）。纯视觉图失忆，纯文字图无力。
+
+创意指令**必须包含以下五项**：
+
+1. **视觉隐喻**：一个具体的画面，不是概念描述
+2. **图中文字**（必填）：明确列出图中应出现的文字——标题、标签、关键短语、数字。这是 Claude 的职责，style JSON 只管怎么渲染，不管写什么
+3. **图文布局**：文字和视觉元素的空间关系（文字压在图上？旁注？分区？文字居左视觉居右？）
+4. **情绪注脚**：一个形容词告诉模型整体感受（压迫/轻盈/冷静/紧张）
+5. **明确排除**：不要什么，防止模型发散
 
 好的创意指令示例：
 ```
-"一个悬停在岔路口上方的俯视视角：左侧道路标注'结构化'，右侧标注'去结构化'，
-用虚线表示读者视线的不确定性。灰度，极简，无人物。构图中心留白，两侧等重。"
+视觉：一个俯视岔路口，左侧道路、右侧道路分叉延伸至远处消失点。
+图中文字：左侧标注「结构化」，右侧标注「去结构化」，路口中央标注「你在这里」。
+图文布局：文字作为路牌贴在路面，与视觉融为一体；底部留白区域放说明文字「两种路径，取决于读者类型」。
+情绪：冷静，轻微压迫感。
+排除：无人物，无色彩，灰度。
 ```
 
-坏的创意指令（等于没有）：
+坏的创意指令（没有文字 = 钉没打进去）：
 ```
-"文章讲了读者类型和内容结构的关系，请生成一张相关的图片"
+"一个分叉的道路，表示两种选择，极简灰度风格"
 ```
+→ 没有指定图中文字，模型要么不加文字，要么乱加文字
 
-创意指令要包含：
-- **一个具体的视觉隐喻**，不是概念描述
-- **构图说明**：主体位置、留白策略、视角
-- **情绪注脚**：一个形容词（压迫感/轻盈/冷静/紧张/）告诉模型图的感受
-- **明确排除**：不要什么（避免模型发散）
+另一种坏的创意指令（文字浮在图上，没有布局关系）：
+```
+"分叉道路图，加上文字'结构化'和'去结构化'"
+```
+→ 没有说文字放哪、怎么和视觉结合
+
+**图中文字的来源原则**：
+- 从文章中提取，不要凭空发明
+- 优先选：核心概念名、文章标题、关键结论短句（8 字以内效果最好）
+- 避免：长句、完整段落（图里放不下，读不了）
+- 数字/数据特别有力：「3 种路径」「提升 40%」比文字描述更抓眼
 
 ---
 
@@ -85,7 +105,7 @@
 视觉选角完成后，确认 style：
 
 ```bash
-python3 ~/.claude/skills/xiaohu-wechat-format/scripts/t2i.py --list-styles
+python3 ~/.claude/skills/wechat-format/scripts/t2i.py --list-styles
 ```
 
 **风格 ≠ 内容**。风格是视觉语法（颜色规则、排版规则），内容指令是第 1 步写的创意指令。
@@ -103,19 +123,19 @@ python3 ~/.claude/skills/xiaohu-wechat-format/scripts/t2i.py --list-styles
 
 ```bash
 # 推荐：Claude 写创意指令
-python3 ~/.claude/skills/xiaohu-wechat-format/scripts/t2i.py \
+python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
   --prompt "一个悬停在岔路口上方的俯视视角：左侧道路标注'结构化'，右侧标注'去结构化'，用虚线表示不确定性。灰度，极简，无人物。" \
   --style infographic \
   --output "."
 
 # 快速模式：直接扔原文（适合简单场景或快速预览）
-python3 ~/.claude/skills/xiaohu-wechat-format/scripts/t2i.py \
+python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
   --content "原文关键段落" \
   --style infographic \
   --output "."
 
 # Pro 模型：复杂信息图、文字精度要求高时
-python3 ~/.claude/skills/xiaohu-wechat-format/scripts/t2i.py \
+python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
   --prompt "创意指令" \
   --style infographic \
   --model pro
@@ -158,7 +178,7 @@ python3 ~/.claude/skills/xiaohu-wechat-format/scripts/t2i.py \
 #### 内置 Prompt 位置
 
 ```
-~/.claude/skills/xiaohu-wechat-format/prompts/
+~/.claude/skills/wechat-format/prompts/
   infographic.json   # 技术信息图（高对比度黑白，文档级）
   cover.json         # 公众号封面图（16:9，编辑风格）
 ```

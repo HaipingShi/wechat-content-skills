@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Project Is
 
-A Claude Code skill for formatting Markdown articles into WeChat Official Account (公众号) compatible HTML, with 30+ themes, a visual gallery picker, AI content enhancement, and one-click publishing. Installed as a skill under `~/.claude/skills/xiaohu-wechat-format/`.
+A Claude Code skill for formatting Markdown articles into WeChat Official Account (公众号) compatible HTML, with 30+ themes, a visual gallery picker, AI content enhancement, and one-click publishing. Installed as a skill under `~/.claude/skills/wechat-format/`.
 
 ## Running the Scripts
 
