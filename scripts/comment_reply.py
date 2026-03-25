@@ -24,7 +24,7 @@ from pathlib import Path
 from datetime import datetime
 
 SCRIPT_DIR = Path(__file__).parent
-CONFIG_PATH = SCRIPT_DIR.parent / "config.json"
+CONFIG_PATH = Path.cwd() / "wechat-config.json"
 STATE_PATH = SCRIPT_DIR.parent / "comment_state.json"
 LOG_PATH = SCRIPT_DIR.parent / "comment_reply.log"
 

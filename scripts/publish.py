@@ -31,7 +31,7 @@ import requests
 SCRIPT_DIR = Path(__file__).parent
 SKILL_DIR = SCRIPT_DIR.parent
 
-with open(SKILL_DIR / "config.json", encoding="utf-8") as f:
+with open(Path.cwd() / "wechat-config.json", encoding="utf-8") as f:
     CONFIG = json.load(f)
 
 

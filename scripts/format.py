@@ -46,8 +46,8 @@ CALLOUT_TYPE_COLORS = {
 GALLERY_THEMES = [
     # 深度长文（4）
     "newspaper", "magazine", "ink", "coffee-house",
-    # 科技产品（4）
-    "bytedance", "github", "sspai", "midnight",
+    # 科技产品（5）
+    "bytedance", "github", "sspai", "midnight", "dark-report",
     # 文艺随笔（4）
     "terracotta", "mint-fresh", "sunset-amber", "lavender-dream",
     # 活力动态（4）
@@ -100,11 +100,11 @@ SKILL_DIR = SCRIPT_DIR.parent
 THEMES_DIR = SKILL_DIR / "themes"
 TEMPLATE_DIR = SKILL_DIR / "templates"
 
-with open(SKILL_DIR / "config.json", encoding="utf-8") as f:
+with open(Path.cwd() / "wechat-config.json", encoding="utf-8") as f:
     CONFIG = json.load(f)
 
 OUTPUT_DIR = Path(CONFIG["output_dir"])
-VAULT_ROOT = Path(CONFIG["vault_root"])
+VAULT_ROOT = Path.cwd()
 DEFAULT_THEME = CONFIG["settings"]["default_theme"]
 AUTO_OPEN = CONFIG["settings"]["auto_open_browser"]
 
