@@ -105,7 +105,7 @@
 视觉选角完成后，确认 style：
 
 ```bash
-python3 ~/.claude/skills/wechat-format/scripts/t2i.py --list-styles
+python3 ~/.claude/skills/wechat-content-skills/scripts/t2i.py --list-styles
 ```
 
 **风格 ≠ 内容**。风格是视觉语法（颜色规则、排版规则），内容指令是第 1 步写的创意指令。
@@ -123,19 +123,19 @@ python3 ~/.claude/skills/wechat-format/scripts/t2i.py --list-styles
 
 ```bash
 # 推荐：Claude 写创意指令
-python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
+python3 ~/.claude/skills/wechat-content-skills/scripts/t2i.py \
   --prompt "一个悬停在岔路口上方的俯视视角：左侧道路标注'结构化'，右侧标注'去结构化'，用虚线表示不确定性。灰度，极简，无人物。" \
   --style infographic \
   --output "."
 
 # 快速模式：直接扔原文（适合简单场景或快速预览）
-python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
+python3 ~/.claude/skills/wechat-content-skills/scripts/t2i.py \
   --content "原文关键段落" \
   --style infographic \
   --output "."
 
 # Pro 模型：复杂信息图、文字精度要求高时
-python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
+python3 ~/.claude/skills/wechat-content-skills/scripts/t2i.py \
   --prompt "创意指令" \
   --style infographic \
   --model pro
@@ -178,7 +178,7 @@ python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
 #### 内置 Prompt 位置
 
 ```
-~/.claude/skills/wechat-format/prompts/
+~/.claude/skills/wechat-content-skills/prompts/
   infographic.json   # 技术信息图（高对比度黑白，文档级）
   cover.json         # 公众号封面图（16:9，编辑风格）
 ```
