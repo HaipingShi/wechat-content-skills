@@ -193,10 +193,36 @@ def resolve_output(args, style_id: str) -> Path:
     if args.output:
         p = Path(args.output)
         if p.is_dir():
-            # 自动生成文件名
+            # 自动生成自然语言文件名
             from datetime import datetime
-            ts = datetime.now().strftime("%Y%m%d-%H%M%S")
-            return p / f"t2i-{style_id}-{ts}.png"
+            # 从内容中提取关键词生成描述性文件名
+            content_preview = ""
+            if args.prompt:
+                content_preview = args.prompt[:50].strip()
+            elif args.content:
+                content_preview = args.content[:50].strip()
+            elif args.input:
+                # 从文件名提取关键词
+                input_name = Path(args.input).stem
+                content_preview = input_name.replace('_', ' ').replace('-', ' ')
+
+            # 生成自然语言文件名
+            if content_preview:
+                # 清理文件名：移除特殊字符，限制长度
+                safe_name = "".join(c for c in content_preview if c.isalnum() or c in " _-").strip()
+                safe_name = safe_name.replace(" ", "_").replace("-", "_")[:30].rstrip("_")
+                if safe_name:
+                    filename = f"{style_id}_{safe_name}.png"
+                else:
+                    # fallback 到时间戳
+                    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    filename = f"{style_id}_{ts}.png"
+            else:
+                # fallback 到时间戳
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"{style_id}_{ts}.png"
+
+            return p / filename
         # 确保父目录存在
         p.parent.mkdir(parents=True, exist_ok=True)
         return p
@@ -209,13 +235,40 @@ def resolve_output(args, style_id: str) -> Path:
     ]
     for d in candidates:
         if d.exists():
-            from datetime import datetime
-            ts = datetime.now().strftime("%Y%m%d-%H%M%S")
-            return d / f"t2i-{style_id}-{ts}.png"
+            # 生成自然语言文件名
+            content_preview = ""
+            if args.prompt:
+                content_preview = args.prompt[:50].strip()
+            elif args.content:
+                content_preview = args.content[:50].strip()
+            elif args.input:
+                # 从文件名提取关键词
+                input_name = Path(args.input).stem
+                content_preview = input_name.replace('_', ' ').replace('-', ' ')
+
+            # 生成自然语言文件名
+            if content_preview:
+                # 清理文件名：移除特殊字符，限制长度
+                safe_name = "".join(c for c in content_preview if c.isalnum() or c in " _-").strip()
+                safe_name = safe_name.replace(" ", "_").replace("-", "_")[:30].rstrip("_")
+                if safe_name:
+                    filename = f"{style_id}_{safe_name}.png"
+                else:
+                    # fallback 到时间戳
+                    from datetime import datetime
+                    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    filename = f"{style_id}_{ts}.png"
+            else:
+                # fallback 到时间戳
+                from datetime import datetime
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"{style_id}_{ts}.png"
+
+            return d / filename
 
     # fallback
     from datetime import datetime
-    ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     return Path(f"/tmp/t2i-{style_id}-{ts}.png")
 
 

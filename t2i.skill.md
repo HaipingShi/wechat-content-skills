@@ -149,7 +149,7 @@ python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
 
 每张图生成后：
 1. 用 `Read` 工具读取图片展示给用户
-2. 告知位置和建议插入点：`第二节「读者决定了结构化策略」之后 → ![[attachments/t2i-infographic-143022.png]]`
+2. 告知位置和建议插入点：`第二节「读者决定了结构化策略」之后 → ![[attachments/infographic_读者决定了结构化策略.png]]`
 3. 如果多张图，最后整理一个插入建议列表
 
 ---
@@ -222,6 +222,23 @@ python3 ~/.claude/skills/wechat-format/scripts/t2i.py \
 | `--list-styles` | 列出所有风格 | — |
 
 **优先级**：`--prompt` > `--content` > `--input`
+
+---
+
+### 图片命名规则
+
+生成的图片使用自然语言命名，便于识别和管理：
+
+- **格式**：`{style_id}_{描述性名称}.png`
+- **来源**：
+  - `--prompt`：从创意指令的前50个字符提取
+  - `--content`：从内容文本的前50个字符提取
+  - `--input`：从文件名提取（去掉扩展名，转换分隔符）
+- **处理**：自动清理特殊字符，限制长度为30字符，转换为下划线分隔
+- **示例**：
+  - `infographic_读者决定了结构化策略.png`
+  - `cover_文章标题示例.png`
+  - `infographic_20240325_143022.png`（fallback时间戳）
 
 ---
 
