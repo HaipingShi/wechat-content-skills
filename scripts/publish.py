@@ -210,7 +210,8 @@ def replace_all_images(html, article_dir, token):
     return html, replaced, failed
 
 
-def push_draft(token, title, content, thumb_media_id, author="小互"):
+def push_draft(token, title, content, thumb_media_id, author="",
+               digest="", need_open_comment=0, only_fans_can_comment=0):
     """推送文章到草稿箱"""
     url = f"https://api.weixin.qq.com/cgi-bin/draft/add?access_token={token}"
 
@@ -219,11 +220,12 @@ def push_draft(token, title, content, thumb_media_id, author="小互"):
             {
                 "title": title,
                 "author": author,
+                "digest": digest,
                 "content": content,
                 "content_source_url": "",
                 "thumb_media_id": thumb_media_id,
-                "need_open_comment": 0,
-                "only_fans_can_comment": 0,
+                "need_open_comment": need_open_comment,
+                "only_fans_can_comment": only_fans_can_comment,
             }
         ]
     }
@@ -365,9 +367,15 @@ def main():
 
     # ── 3. 提取标题 ──────────────────────────────────────────────────
     title = args.title or extract_title_from_html(html) or article_dir.name
+    wechat_cfg = CONFIG.get("wechat", {})
     author = args.author
+    digest = wechat_cfg.get("digest", "")
+    need_open_comment = int(wechat_cfg.get("need_open_comment", 0))
+    only_fans_can_comment = int(wechat_cfg.get("only_fans_can_comment", 0))
     print(f"标题: {title}")
     print(f"作者: {author}")
+    if digest:
+        print(f"摘要: {digest[:30]}{'...' if len(digest) > 30 else ''}")
 
     # ── 4. 获取 token ────────────────────────────────────────────────
     print(f"\n获取 access_token...")
@@ -427,7 +435,13 @@ def main():
         return
 
     print(f"\n推送到草稿箱...")
-    media_id = push_draft(token, title, html, thumb_media_id, author)
+    media_id = push_draft(
+        token, title, html, thumb_media_id,
+        author=author,
+        digest=digest,
+        need_open_comment=need_open_comment,
+        only_fans_can_comment=only_fans_can_comment,
+    )
 
     if media_id:
         print(f"\n{'='*40}")

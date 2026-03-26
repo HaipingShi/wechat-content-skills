@@ -6,6 +6,10 @@
   },
   "wechat": {
     "app_id": "YOUR_APP_ID",
-    "app_secret": "YOUR_APP_SECRET"
+    "app_secret": "YOUR_APP_SECRET",
+    "author": "作者名",
+    "digest": "",
+    "need_open_comment": 0,
+    "only_fans_can_comment": 0
   }
 }
