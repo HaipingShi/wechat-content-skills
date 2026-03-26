@@ -11,6 +11,7 @@
 """
 
 import argparse
+import base64
 import json
 import os
 import re
@@ -1341,6 +1342,28 @@ def convert_callouts(html: str, style_map: dict) -> str:
 
 
 # ── 预览 HTML 生成 ──────────────────────────────────────────────────────
+def inline_images_as_base64(html: str, output_dir: Path) -> str:
+    """将 HTML 中本地 images/ 相对路径替换为 base64 data URL，使预览 HTML 自包含"""
+    MIME = {
+        ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+        ".png": "image/png", ".gif": "image/gif",
+        ".webp": "image/webp", ".svg": "image/svg+xml",
+    }
+
+    def replace_src(match):
+        src = match.group(1)
+        if src.startswith(("http://", "https://", "data:")):
+            return match.group(0)
+        img_path = output_dir / src
+        if not img_path.exists():
+            return match.group(0)
+        mime = MIME.get(img_path.suffix.lower(), "image/jpeg")
+        b64 = base64.b64encode(img_path.read_bytes()).decode()
+        return f'src="data:{mime};base64,{b64}"'
+
+    return re.sub(r'src="([^"]+)"', replace_src, html)
+
+
 def generate_preview(article_html: str, footnote_html: str, theme: dict,
                      title: str, word_count: int, output_path: Path):
     """生成浏览器预览 HTML 文件"""
@@ -1351,6 +1374,10 @@ def generate_preview(article_html: str, footnote_html: str, theme: dict,
     full_html = article_html
     if footnote_html:
         full_html += "\n" + footnote_html
+
+    # 将本地图片内嵌为 base64，使预览 HTML 完全自包含
+    output_dir = output_path.parent
+    full_html = inline_images_as_base64(full_html, output_dir)
 
     preview_html = (
         template
@@ -1450,13 +1477,14 @@ def generate_gallery(rendered_map: dict, theme_map: dict,
             btn_index += 1
         buttons_html += '</div>\n'
 
-    # 生成 THEME_PREVIEWS
+    # 生成 THEME_PREVIEWS（图片内嵌为 base64，避免浏览器文件访问限制）
     previews_html = ""
     for i, tid in enumerate(theme_ids):
         display = "block" if i == 0 else "none"
+        content = inline_images_as_base64(rendered_map[tid], output_dir)
         previews_html += (
             f'<div class="theme-preview" data-theme="{tid}" '
-            f'style="display:{display}">{rendered_map[tid]}</div>\n'
+            f'style="display:{display}">{content}</div>\n'
         )
 
     gallery_html = (
