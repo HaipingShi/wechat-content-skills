@@ -8,8 +8,8 @@
     "app_id": "YOUR_APP_ID",
     "app_secret": "YOUR_APP_SECRET",
     "author": "作者名",
-    "digest": "",
-    "need_open_comment": 0,
+    "digest": "一句话摘要",
+    "need_open_comment": 1,
     "only_fans_can_comment": 0
   }
 }
