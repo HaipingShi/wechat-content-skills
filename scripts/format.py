@@ -239,6 +239,8 @@ def convert_wikilinks(text: str, vault_root: Path, output_dir: Path) -> str:
         # 处理带尺寸的 wikilink: ![[image.jpg|300]]
         if "|" in filename:
             filename = filename.split("|")[0].strip()
+        # 处理带路径的 wikilink: ![[attachments/image.jpg]] → image.jpg
+        filename = Path(filename).name
         # 在多个目录中搜索图片（followlinks=True 跟随符号链接）
         for search_root in search_roots:
             if not search_root.exists():
